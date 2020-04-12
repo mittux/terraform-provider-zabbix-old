@@ -5,7 +5,8 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
-	"github.com/tpretz/go-zabbix-api"
+
+	zabbix "github.com/tpretz/go-zabbix-api"
 )
 
 // Provider definition
@@ -47,10 +48,11 @@ func Provider() *schema.Provider {
 			},
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"zabbix_host":      dataHost(),
-			"zabbix_proxy":     dataProxy(),
-			"zabbix_hostgroup": dataHostgroup(),
-			"zabbix_template":  dataTemplate(),
+			"zabbix_host":        dataHost(),
+			"zabbix_proxy":       dataProxy(),
+			"zabbix_hostgroup":   dataHostgroup(),
+			"zabbix_template":    dataTemplate(),
+			"zabbix_application": dataApplication(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"zabbix_item_trapper":   resourceItemTrapper(),
@@ -61,6 +63,7 @@ func Provider() *schema.Provider {
 			"zabbix_item_agent":     resourceItemAgent(),
 			"zabbix_item_aggregate": resourceItemAggregate(),
 			"zabbix_item_dependent": resourceItemDependent(),
+			"zabbix_application":    resourceApplication(),
 			"zabbix_trigger":        resourceTrigger(),
 			"zabbix_template":       resourceTemplate(),
 			"zabbix_hostgroup":      resourceHostgroup(),
