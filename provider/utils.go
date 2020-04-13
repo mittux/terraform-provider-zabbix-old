@@ -47,6 +47,18 @@ func buildTemplateIds(s *schema.Set) zabbix.TemplateIDs {
 	return groups
 }
 
+func buildApplicationIds(s *schema.Set) []string {
+    list := s.List()
+
+    var apps []string
+
+    for i := 0; i < len(list); i++ {
+        apps = append(apps, list[i].(string))
+    }
+
+    return apps
+}
+
 // mergeSchemas, take a varadic list of schemas and merge, latter overwrites former
 func mergeSchemas(schemas ...map[string]*schema.Schema) map[string]*schema.Schema {
 	n := map[string]*schema.Schema{}
