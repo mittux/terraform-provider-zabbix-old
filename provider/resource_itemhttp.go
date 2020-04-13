@@ -1,7 +1,6 @@
 package provider
 
 import (
-	"regexp"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -100,15 +99,6 @@ func resourceItemHttp() *schema.Resource {
 				Optional:    true,
 				Default:     true,
 			},
-            "applications":  &schema.Schema{
-		        Type:        schema.TypeSet,
-		        Description: "IDs of the applications to add the item to",
-				Optional:    true,
-		        Elem: &schema.Schema{
-			        Type:         schema.TypeString,
-			        ValidateFunc: validation.StringMatch(regexp.MustCompile("^[0-9]+$"), "must be a numeric string"),
-		        },
-            },
 		}),
 	}
 }
@@ -134,7 +124,7 @@ func itemHttpModFunc(d *schema.ResourceData, item *zabbix.Item) {
 	if d.Get("verify_peer").(bool) {
 		item.VerifyPeer = "1"
 	}
- 	item.ApplicationIds = buildApplicationIds(d.Get("applications").(*schema.Set))
+	item.ApplicationIds = buildApplicationIds(d.Get("applications").(*schema.Set))
 }
 
 // http item read custom function
@@ -149,9 +139,4 @@ func itemHttpReadFunc(d *schema.ResourceData, item *zabbix.Item) {
 	d.Set("timeout", item.Timeout)
 	d.Set("verify_host", item.VerifyHost == "1")
 	d.Set("verify_peer", item.VerifyPeer == "1")
-	appSet := schema.NewSet(schema.HashString, []interface{}{})
-	for _, v := range item.ApplicationIds {
-	  appSet.Add(v)
-        }
-	d.Set("applications", appSet)
 }

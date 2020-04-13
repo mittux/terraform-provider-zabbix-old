@@ -62,6 +62,16 @@ var itemCommonSchema = map[string]*schema.Schema{
 		Required:     true,
 	},
 	"preprocessor": itemPreprocessorSchema,
+    "applications":  &schema.Schema{
+        Type:        schema.TypeSet,
+        Description: "IDs of the applications to add the item to",
+        Optional:    true,
+        Elem: &schema.Schema{
+            Type:         schema.TypeString,
+            ValidateFunc: validation.StringMatch(regexp.MustCompile("^[0-9]+$"), "must be a numeric string"),
+        },
+    },
+
 }
 
 // Delay schema
@@ -229,6 +239,11 @@ func resourceItemRead(d *schema.ResourceData, m interface{}, r ItemHandler) erro
 	d.Set("name", item.Name)
 	d.Set("valuetype", ITEM_VALUE_TYPES_REV[item.ValueType])
 	d.Set("preprocessor", flattenItemPreprocessors(item))
+	appSet := schema.NewSet(schema.HashString, []interface{}{})
+	for _, v := range item.ApplicationIds {
+	  appSet.Add(v)
+        }
+	d.Set("applications", appSet)
 
 	// run custom
 	r(d, &item)
